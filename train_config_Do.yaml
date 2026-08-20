@@ -1,0 +1,24 @@
+
+train_annotation: "/home/nqa/Documents/DataSets/Do/do_train.csv"
+val_annotation: "/home/nqa/Documents/DataSets/Do/do_val.csv"
+test_annotation: "/home/nqa/Documents/DataSets/Do/do_test.csv"
+image_dir: "/home/nqa/Documents/DataSets/Do/images"
+batch_size: 16
+learning_rate: 0.0005
+num_classes: 102
+epochs: 100
+model_name: "tf_efficientnetv2_m"  # Change to "tf_efficientnetv2_s", "tf_efficientnetv2_m", "tf_efficientnetv2_l", or "tf_efficientnetv2_xl" as needed
+input_key: "m"
+eca_layers: "blocks.4.1.conv_pw"
+cbam_layers: "blocks.4.1.conv_pw"
+log_dir: "logs/efficientnetv2_eca"
+early_stop_patience: 20
+input_size: {"s": 300, "m": 384, "l": 480, "xl": 512}
+
+# Note: The input_size is a dictionary to allow for different input sizes based on the model variant.
+# The keys 's', 'm', 'l', and 'xl' correspond to different EfficientNetV2 model sizes.
+# Adjust the input size according to the model you are using.
+# For example, if you are using 'tf_efficientnetv2_m', you would use input_size["m"] which is 384.
+# This allows for flexibility in the input size based on the model variant.
+# Ensure that the input size matches the expected input dimensions of the model
+# you are training.
