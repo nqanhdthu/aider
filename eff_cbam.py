@@ -1,5 +1,6 @@
 import os
 #os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+import argparse
 import torch
 
 import torch.optim as optim
@@ -9,6 +10,7 @@ from torchvision.utils import save_image
 from PIL import Image
 
 import yaml
+import pandas as pd
 from tqdm import tqdm
 from torch.utils.tensorboard import SummaryWriter
 import time
@@ -158,8 +160,8 @@ class DoDataset(torch.utils.data.Dataset):
 
         return image, label
 
-if __name__ == "__main__":
-    with open("train_config.yaml", 'r') as file:
+def train_cbam(config_path="train_config.yaml"):
+    with open(config_path, 'r') as file:
         config = yaml.safe_load(file)
 
     os.makedirs(config['log_dir'], exist_ok=True)
@@ -259,3 +261,18 @@ if __name__ == "__main__":
     print(f"Training completed in {total_time / 60:.2f} minutes.")
 
     writer.close()
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Train CBAM EfficientNetV2 model")
+    parser.add_argument(
+        "--config",
+        default="train_config.yaml",
+        help="Path to YAML config file",
+    )
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    args = parse_args()
+    train_cbam(args.config)
