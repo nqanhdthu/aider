@@ -17,11 +17,11 @@ def normalize_dataset(dataset: str) -> str:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Unified framework for train/eval/feature+SVM.")
+    parser = argparse.ArgumentParser(description="Unified framework for train/eval/feature-based classification.")
     parser.add_argument(
         "mode",
         choices=["train", "eval", "svm", "full"],
-        help="train: train model, eval: evaluate, svm: backbone feature + SVM, full: train+eval+svm",
+        help="train: train model, eval: evaluate, svm: backbone feature + classifier, full: train+eval+classifier",
     )
     parser.add_argument(
         "--dataset",
@@ -44,6 +44,12 @@ def build_parser() -> argparse.ArgumentParser:
         "--checkpoint",
         default=None,
         help="Checkpoint path. If omitted, use framework default output path.",
+    )
+    parser.add_argument(
+        "--classifier",
+        default="svm",
+        choices=["svm", "knn", "logistic_regression", "decision_tree", "random_forest", "xgboost", "lightgbm", "catboost"],
+        help="Classifier used in feature mode and full mode.",
     )
     return parser
 
@@ -92,15 +98,21 @@ def main() -> int:
         return 0
 
     if args.mode == "svm":
-        from framework.pipeline import run_feature_svm_pipeline
+        from framework.pipeline import run_feature_classification_pipeline
 
-        metrics = run_feature_svm_pipeline(cfg=cfg, model_type=args.model, checkpoint_path=args.checkpoint)
+        metrics = run_feature_classification_pipeline(
+            cfg=cfg,
+            model_type=args.model,
+            checkpoint_path=args.checkpoint,
+            classifier_type=args.classifier,
+        )
         print_json(
             {
                 "status": "ok",
                 "mode": "svm",
                 "dataset": dataset,
                 "model": args.model,
+                "classifier": args.classifier,
                 "metrics": metrics,
             }
         )
@@ -108,13 +120,14 @@ def main() -> int:
 
     from framework.pipeline import run_full_pipeline
 
-    summary = run_full_pipeline(cfg=cfg, model_type=args.model)
+    summary = run_full_pipeline(cfg=cfg, model_type=args.model, classifier_type=args.classifier)
     print_json(
         {
             "status": "ok",
             "mode": "full",
             "dataset": dataset,
             "model": args.model,
+            "classifier": args.classifier,
             "summary": summary,
         }
     )

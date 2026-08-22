@@ -9,7 +9,7 @@ It supports:
 - Training (`baseline` or `cbam`)
 - Evaluation of trained models
 - Backbone feature extraction from trained models
-- SVM training on extracted features
+- Classification model training on extracted features (SVM, KNN, Logistic Regression, Decision Tree, Random Forest, XGBoost, LightGBM, CatBoost)
 - Full end-to-end pipeline
 
 ---
@@ -34,7 +34,7 @@ It supports:
 - `framework/config.py`: loads config automatically by dataset.
 - `framework/data.py`: shared data loader for `.txt` (IP102) and `.csv` (Do/Xie).
 - `framework/modeling.py`: model creation, checkpoint loading, backbone feature extraction.
-- `framework/pipeline.py`: train / eval / svm / full pipeline logic.
+- `framework/pipeline.py`: train / eval / feature-classifier / full pipeline logic.
 
 ---
 
@@ -96,17 +96,19 @@ Use a specific checkpoint:
 python3 main.py eval --dataset ip102 --model baseline --checkpoint /path/to/checkpoint.pth
 ```
 
-### 4.3 Feature Extraction + SVM
+### 4.3 Feature Extraction + Classifier
 
 ```bash
 python3 main.py svm --dataset ip102 --model baseline
-python3 main.py svm --dataset do --model cbam
+python3 main.py svm --dataset do --model cbam --classifier random_forest
+python3 main.py svm --dataset xie --model cbam --classifier xgboost
 ```
 
-### 4.4 Full Pipeline (train + eval + svm)
+### 4.4 Full Pipeline (train + eval + feature-classifier)
 
 ```bash
 python3 main.py full --dataset xie --model baseline
+python3 main.py full --dataset xie --model baseline --classifier lightgbm
 ```
 
 ---
@@ -126,8 +128,9 @@ Typical artifacts:
 - `features/`
   - `train_val_features.npy`, `train_val_labels.npy`
   - `test_features.npy`, `test_labels.npy`
-- `svm_model.pkl`, `svm_scaler.pkl`
-- `svm_metrics.json`
+- `<classifier>_model.pkl`
+- `<classifier>_metrics.json`
+- `<classifier>_scaler.pkl` (for scaled classifiers, e.g. SVM/KNN/Logistic Regression)
 - `label_mapping.json`
 
 ---
@@ -144,9 +147,19 @@ Supported modes:
 - `svm`
 - `full`
 
-Supported models:
+Supported backbone models:
 - `baseline`
 - `cbam`
+
+Supported feature classifiers (`--classifier`):
+- `svm` (default)
+- `knn`
+- `logistic_regression`
+- `decision_tree`
+- `random_forest`
+- `xgboost`
+- `lightgbm`
+- `catboost`
 
 Supported datasets:
 - `ip102`, `do`, `xie`
