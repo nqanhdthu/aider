@@ -1,0 +1,59 @@
+environment:
+  os: "Ubuntu 22.04.5 LTS"
+  python: "3.11.11"
+  pytorch: "2.6.0+cu124"
+  torchvision: "0.21.0+cu124"
+  timm: "1.0.14"
+  scikit_learn: "1.6.1"
+  catboost: "1.2.8"
+  pillow: "11.1.0"
+  imagehash: "4.3.2"
+  cuda: "12.4"
+  nvidia_driver: "550.144.03"
+
+optimizer:
+  name: AdamW
+  beta1: 0.9
+  beta2: 0.999
+  weight_decay: 1.0e-4
+  base_learning_rate: 5.0e-4
+  batch_size: 16
+  epochs: 100
+  warmup_epochs: 5
+  warmup_start_lr: 5.0e-5
+  cosine_final_lr: 1.0e-6
+  gradient_clip_global_norm: 1.0
+  amp_fp16: true
+  label_smoothing: 0
+  early_stopping: false
+  checkpoint_selection_metric: macro_f1
+
+augmentations:
+  horizontal_flip_probability: 0.5
+  rotation_degrees: [-10, 10]
+  rotation_probability: 0.5
+  translate_fraction_x: [-0.10, 0.10]
+  translate_fraction_y: [-0.10, 0.10]
+  translation_probability: 0.5
+  shear_degrees: [-10, 10]
+  shear_probability: 0.5
+  scale: [0.90, 1.10]
+  scale_probability: 0.5
+
+runs:
+  seeds: [202601, 202602, 202603, 202604, 202605, 202606, 202607, 202608, 202609, 202610]
+  cudnn_benchmark: false
+  cudnn_deterministic: true
+  global_strict_deterministic_algorithms: false
+
+embedding_standardization:
+  fit_on: training_embeddings_only
+  epsilon: 1.0e-8
+
+imbalance_controls:
+  weighted_cross_entropy: inverse_frequency
+  balanced_softmax: training_class_counts
+  focal_loss:
+    gamma: 2
+    class_dependent_alpha: false
+    reduction: mean

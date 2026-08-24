@@ -1,0 +1,4 @@
+dataset,cross_split_exact_matches,cross_split_confirmed_near_duplicate_pairs,split_unit,provenance
+Xie24,0,0,Original/duplicate group,Supplementary Table S8
+D0,0,0,Duplicate group,Supplementary Table S8
+IP102,0,0,"Official classification split, audited post hoc",Supplementary Table S8

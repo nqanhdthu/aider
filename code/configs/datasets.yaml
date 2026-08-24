@@ -1,0 +1,41 @@
+datasets:
+  Xie24:
+    classes: 24
+    images: 1600
+    train: 1120
+    validation: 160
+    test: 320
+    train_min_max_per_class: [35, 60]
+    validation_min_max_per_class: [5, 9]
+    test_min_max_per_class: [10, 17]
+    split_policy: original_image_grouped_before_training_augmentation
+  D0:
+    classes: 40
+    images: 4508
+    train: 3156
+    validation: 451
+    test: 901
+    train_min_max_per_class: [52, 118]
+    validation_min_max_per_class: [7, 17]
+    test_min_max_per_class: [15, 34]
+    split_policy: duplicate_grouped_before_class_stratified_partition
+  IP102:
+    classes: 102
+    images: 75222
+    train: 45095
+    validation: 7508
+    test: 22619
+    train_min_max_per_class: [39, 3420]
+    validation_min_max_per_class: [7, 569]
+    test_min_max_per_class: [20, 1715]
+    split_policy: official_classification_split_audited_post_hoc
+
+duplicate_audit:
+  exact_hash: SHA-256
+  perceptual_hash: imagehash.phash
+  hash_size: 8
+  highfreq_factor: 4
+  phash_bits: 64
+  candidate_hamming_threshold: 4
+  candidate_confirmation: visual_verification
+  grouping: transitive_connected_components

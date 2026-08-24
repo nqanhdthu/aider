@@ -1,0 +1,53 @@
+cross_validation:
+  folds: 5
+  stratified: true
+  data_scope: training_embeddings_only
+  tuning_metric: macro_f1
+  standardization_fitted_inside_each_training_fold: true
+  refit_after_tuning: complete_training_embeddings_only
+  validation_used_for_hyperparameter_optimization: false
+
+logistic_regression:
+  implementation: sklearn.linear_model.LogisticRegression
+  solver: lbfgs
+  penalty: l2
+  tolerance: 1.0e-4
+  max_iter: 1000
+  C: [0.001, 0.01, 0.1, 1, 10, 100]
+  class_weight_variants: [null, balanced]
+
+linear_svm:
+  implementation: sklearn.svm.LinearSVC
+  loss: squared_hinge
+  penalty: l2
+  tolerance: 1.0e-4
+  max_iter: 1000
+  C: [0.001, 0.01, 0.1, 1, 10, 100]
+  class_weight_variants: [null, balanced]
+
+knn:
+  metric: euclidean
+  k: [1, 3, 5, 7, 9, 11, 15, 21]
+  weights: [uniform, distance]
+
+decision_tree:
+  criterion: gini
+  class_weight: balanced
+  max_depth: [10, 20, 40, null]
+  min_samples_leaf: [1, 5, 10]
+
+random_forest:
+  n_estimators: 500
+  criterion: gini
+  max_features: sqrt
+  class_weight: balanced_subsample
+  max_depth: [20, 40, null]
+
+catboost:
+  implementation: catboost.CatBoostClassifier
+  loss_function: MultiClass
+  iterations: [300, 600, 1000]
+  depth: [4, 6, 8]
+  learning_rate: [0.03, 0.1]
+  l2_leaf_reg: [3, 10]
+  external_validation_early_stopping: false

@@ -1,0 +1,121 @@
+seed,configuration,accuracy,macro_precision,macro_recall,macro_f1
+202601,End-to-end | Softmax CE | None,80.2672,76.6063,71.8824,72.9912
+202602,End-to-end | Softmax CE | None,79.9493,76.2068,71.3509,73.0889
+202603,End-to-end | Softmax CE | None,79.9455,76.344,71.9807,73.2317
+202604,End-to-end | Softmax CE | None,80.2021,76.1824,72.2562,73.4809
+202605,End-to-end | Softmax CE | None,79.9152,76.2946,71.8507,73.0815
+202606,End-to-end | Softmax CE | None,80.3026,76.7854,71.4027,72.8797
+202607,End-to-end | Softmax CE | None,80.1871,76.2466,71.6022,72.8474
+202608,End-to-end | Softmax CE | None,80.055,76.0314,71.6673,73.5773
+202609,End-to-end | Softmax CE | None,80.0631,76.6679,71.7987,73.3965
+202610,End-to-end | Softmax CE | None,80.413,76.4346,72.0081,72.925
+202601,End-to-end | Softmax WCE | Inverse-frequency,79.9836,74.6729,73.0462,73.6896
+202602,End-to-end | Softmax WCE | Inverse-frequency,79.5392,75.0612,73.2177,73.7627
+202603,End-to-end | Softmax WCE | Inverse-frequency,79.6062,75.5071,72.9069,74.2929
+202604,End-to-end | Softmax WCE | Inverse-frequency,79.6598,75.1634,73.118,73.4345
+202605,End-to-end | Softmax WCE | Inverse-frequency,79.7227,75.2891,72.7733,74.0816
+202606,End-to-end | Softmax WCE | Inverse-frequency,79.8592,75.2471,73.1969,74.0148
+202607,End-to-end | Softmax WCE | Inverse-frequency,79.4884,75.2658,73.6431,73.5506
+202608,End-to-end | Softmax WCE | Inverse-frequency,80.0329,74.7359,72.6671,73.7591
+202609,End-to-end | Softmax WCE | Inverse-frequency,79.7665,74.9123,73.2278,73.7204
+202610,End-to-end | Softmax WCE | Inverse-frequency,79.9416,75.145,73.4029,74.0938
+202601,End-to-end | Balanced Softmax | Training class counts,80.3886,75.9458,73.0912,74.172
+202602,End-to-end | Balanced Softmax | Training class counts,80.3786,76.0731,72.8686,74.2589
+202603,End-to-end | Balanced Softmax | Training class counts,80.4119,76.0543,72.8602,74.3429
+202604,End-to-end | Balanced Softmax | Training class counts,80.5291,75.8612,72.5433,74.1698
+202605,End-to-end | Balanced Softmax | Training class counts,80.1856,75.7496,72.8331,73.971
+202606,End-to-end | Balanced Softmax | Training class counts,80.102,76.186,73.2123,73.8559
+202607,End-to-end | Balanced Softmax | Training class counts,79.9359,76.2841,72.5285,73.8546
+202608,End-to-end | Balanced Softmax | Training class counts,80.4005,76.546,73.3799,73.4831
+202609,End-to-end | Balanced Softmax | Training class counts,80.3365,76.4436,72.8916,74.114
+202610,End-to-end | Balanced Softmax | Training class counts,80.4313,76.0564,73.1913,73.9778
+202601,End-to-end | Focal loss | gamma=2; no alpha weighting,80.5218,76.8001,72.1169,73.7752
+202602,End-to-end | Focal loss | gamma=2; no alpha weighting,80.279,75.9354,72.2284,73.5303
+202603,End-to-end | Focal loss | gamma=2; no alpha weighting,80.3473,76.2008,72.3065,73.9201
+202604,End-to-end | Focal loss | gamma=2; no alpha weighting,80.371,76.4764,72.7777,73.7778
+202605,End-to-end | Focal loss | gamma=2; no alpha weighting,80.2818,76.3967,72.8565,73.3292
+202606,End-to-end | Focal loss | gamma=2; no alpha weighting,80.7702,76.384,72.5128,73.8513
+202607,End-to-end | Focal loss | gamma=2; no alpha weighting,80.2082,76.239,72.8789,73.901
+202608,End-to-end | Focal loss | gamma=2; no alpha weighting,80.4286,76.0316,72.718,74.0025
+202609,End-to-end | Focal loss | gamma=2; no alpha weighting,80.232,76.2589,72.5381,73.4502
+202610,End-to-end | Focal loss | gamma=2; no alpha weighting,80.16,76.2771,72.2661,74.1623
+202601,Frozen | LR | None,79.4633,73.9543,70.951,71.7761
+202602,Frozen | LR | None,79.3282,74.7118,70.4083,71.9459
+202603,Frozen | LR | None,79.6877,74.3966,70.829,71.7545
+202604,Frozen | LR | None,79.234,74.0117,71.0202,71.0661
+202605,Frozen | LR | None,79.1654,74.1001,70.7845,71.8206
+202606,Frozen | LR | None,79.3303,74.3051,71.0799,71.9019
+202607,Frozen | LR | None,79.3372,74.2416,71.0835,71.8856
+202608,Frozen | LR | None,79.5909,74.3915,70.4549,71.9786
+202609,Frozen | LR | None,79.668,74.1565,71.1153,71.5716
+202610,Frozen | LR | None,79.4949,74.631,70.4734,71.5992
+202601,Frozen | LR | Inverse-frequency,78.9831,73.574,71.6697,72.3035
+202602,Frozen | LR | Inverse-frequency,79.3604,73.2312,72.3069,72.5071
+202603,Frozen | LR | Inverse-frequency,78.9678,73.4458,71.5909,71.6449
+202604,Frozen | LR | Inverse-frequency,78.9508,73.6276,72.0219,71.9427
+202605,Frozen | LR | Inverse-frequency,79.2526,73.3997,71.7012,72.0398
+202606,Frozen | LR | Inverse-frequency,79.2659,73.673,72.1679,71.9437
+202607,Frozen | LR | Inverse-frequency,79.3298,73.6285,71.8582,72.3657
+202608,Frozen | LR | Inverse-frequency,78.9073,73.0869,71.5186,72.0818
+202609,Frozen | LR | Inverse-frequency,79.0233,73.1248,72.0579,71.7961
+202610,Frozen | LR | Inverse-frequency,78.859,73.0085,72.2069,71.8747
+202601,Frozen | Linear SVM | None,80.5888,77.1743,72.4068,74.0944
+202602,Frozen | Linear SVM | None,80.7268,76.5429,72.1616,73.7803
+202603,Frozen | Linear SVM | None,81.0198,77.2969,72.0662,73.6109
+202604,Frozen | Linear SVM | None,80.5943,77.0211,72.1291,73.3149
+202605,Frozen | Linear SVM | None,80.9395,76.8488,72.0809,73.5638
+202606,Frozen | Linear SVM | None,80.9496,77.0293,71.7091,73.4196
+202607,Frozen | Linear SVM | None,80.8772,77.2558,71.7422,73.7882
+202608,Frozen | Linear SVM | None,80.6107,77.1089,72.1782,73.3349
+202609,Frozen | Linear SVM | None,80.7941,77.1702,72.3529,73.5022
+202610,Frozen | Linear SVM | None,80.6993,77.0519,71.6731,73.4908
+202601,Frozen | Linear SVM | Inverse-frequency,81.1105,77.2913,72.9546,73.964
+202602,Frozen | Linear SVM | Inverse-frequency,81.0565,77.646,72.5378,73.9751
+202603,Frozen | Linear SVM | Inverse-frequency,81.1014,77.7581,72.9987,74.059
+202604,Frozen | Linear SVM | Inverse-frequency,81.1175,77.7477,72.8702,74.2749
+202605,Frozen | Linear SVM | Inverse-frequency,81.2598,77.3383,73.0664,74.3574
+202606,Frozen | Linear SVM | Inverse-frequency,80.8522,77.4013,72.5704,74.4319
+202607,Frozen | Linear SVM | Inverse-frequency,81.2777,77.1029,72.6708,74.5226
+202608,Frozen | Linear SVM | Inverse-frequency,81.3223,77.594,72.4585,74.2125
+202609,Frozen | Linear SVM | Inverse-frequency,81.3574,77.4248,73.004,74.086
+202610,Frozen | Linear SVM | Inverse-frequency,81.1446,77.4957,73.1686,74.6165
+202601,Frozen | KNN | None,78.2909,73.1321,70.1054,71.2919
+202602,Frozen | KNN | None,78.3102,73.3975,70.8988,71.3528
+202603,Frozen | KNN | None,78.6464,73.0976,70.2361,70.998
+202604,Frozen | KNN | None,78.6923,73.7781,70.6516,71.4932
+202605,Frozen | KNN | None,78.4625,73.5511,70.4059,71.0998
+202606,Frozen | KNN | None,78.7132,73.7998,70.7632,70.8465
+202607,Frozen | KNN | None,78.7669,72.9442,70.199,71.5115
+202608,Frozen | KNN | None,78.9731,73.164,70.9611,70.8456
+202609,Frozen | KNN | None,78.6455,73.2715,70.742,71.1575
+202610,Frozen | KNN | None,78.699,73.4641,70.3368,70.6034
+202601,Frozen | DT | Class-balanced,58.4703,46.4663,46.6384,43.9525
+202602,Frozen | DT | Class-balanced,57.6066,47.0572,45.006,46.5649
+202603,Frozen | DT | Class-balanced,58.431,46.4539,44.9364,45.772
+202604,Frozen | DT | Class-balanced,58.4017,47.0164,46.2776,46.0479
+202605,Frozen | DT | Class-balanced,57.3069,46.3592,45.1947,45.7526
+202606,Frozen | DT | Class-balanced,59.1697,47.8591,46.1052,46.1504
+202607,Frozen | DT | Class-balanced,58.0526,45.7352,45.7822,46.197
+202608,Frozen | DT | Class-balanced,59.0365,47.9524,44.5072,45.791
+202609,Frozen | DT | Class-balanced,59.1416,46.4747,44.5672,45.1496
+202610,Frozen | DT | Class-balanced,58.9833,48.1256,46.0851,46.2221
+202601,Frozen | RF | Balanced bootstrap,78.5584,79.4311,66.5859,72.333
+202602,Frozen | RF | Balanced bootstrap,78.4677,78.9179,67.1152,72.0046
+202603,Frozen | RF | Balanced bootstrap,78.6548,78.8498,66.9743,71.4278
+202604,Frozen | RF | Balanced bootstrap,78.3785,79.1062,67.0535,72.1449
+202605,Frozen | RF | Balanced bootstrap,78.5864,78.9139,67.3086,71.8098
+202606,Frozen | RF | Balanced bootstrap,78.3706,79.274,67.2243,71.7712
+202607,Frozen | RF | Balanced bootstrap,79.0155,79.4516,66.703,72.1038
+202608,Frozen | RF | Balanced bootstrap,78.5333,79.3686,66.9243,72.432
+202609,Frozen | RF | Balanced bootstrap,78.6695,78.9172,66.7914,71.913
+202610,Frozen | RF | Balanced bootstrap,78.9654,79.5696,66.1195,71.5599
+202601,Frozen | CatBoost | None,79.1424,75.3876,70.0693,72.3801
+202602,Frozen | CatBoost | None,79.3108,75.1762,70.2316,72.2831
+202603,Frozen | CatBoost | None,79.4796,75.8474,70.2091,72.0071
+202604,Frozen | CatBoost | None,79.4431,75.3918,71.1916,72.3599
+202605,Frozen | CatBoost | None,78.958,75.6439,70.5135,72.4624
+202606,Frozen | CatBoost | None,79.0849,75.5329,70.288,71.9073
+202607,Frozen | CatBoost | None,79.2676,75.764,70.2374,71.8545
+202608,Frozen | CatBoost | None,78.8827,75.7654,70.4592,71.5322
+202609,Frozen | CatBoost | None,79.0277,75.4848,70.2277,72.2814
+202610,Frozen | CatBoost | None,79.1032,75.006,70.1725,72.3319

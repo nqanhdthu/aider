@@ -1,0 +1,73 @@
+models:
+  mobilenetv3_large:
+    timm_id: mobilenetv3_large_100.ra_in1k
+    input_ip102: 224
+    embedding_dim: 1280
+    attention_modules_full: 15
+    dropout: 0.2
+    drop_path: 0.0
+    normalization_mean: [0.485, 0.456, 0.406]
+    normalization_std: [0.229, 0.224, 0.225]
+  efficientnet_b5:
+    timm_id: tf_efficientnet_b5.ra_in1k
+    input_ip102: 456
+    embedding_dim: 2048
+    attention_modules_full: 39
+    dropout: 0.4
+    drop_path: 0.0
+    normalization_mean: [0.5, 0.5, 0.5]
+    normalization_std: [0.5, 0.5, 0.5]
+  efficientnetv2_s:
+    timm_id: tf_efficientnetv2_s.in1k
+    input_ip102: 384
+    embedding_dim: 1280
+    attention_modules_full: 40
+    dropout: 0.2
+    drop_path: 0.0
+    normalization_mean: [0.5, 0.5, 0.5]
+    normalization_std: [0.5, 0.5, 0.5]
+  efficientnetv2_m:
+    timm_id: tf_efficientnetv2_m.in1k
+    input_ip102: 384
+    embedding_dim: 1280
+    attention_modules_full: 57
+    dropout: 0.3
+    drop_path: 0.0
+    normalization_mean: [0.5, 0.5, 0.5]
+    normalization_std: [0.5, 0.5, 0.5]
+  convnext_small:
+    timm_id: convnext_small.fb_in1k
+    input_ip102: 224
+    embedding_dim: 768
+    attention_modules_full: 36
+    dropout: 0.0
+    drop_path: 0.1
+    normalization_mean: [0.485, 0.456, 0.406]
+    normalization_std: [0.229, 0.224, 0.225]
+  convnext_base:
+    timm_id: convnext_base.fb_in1k
+    input_ip102: 224
+    input_xie24_d0: 384
+    embedding_dim: 1024
+    attention_modules_full: 36
+    dropout: 0.0
+    drop_path: 0.1
+    normalization_mean: [0.485, 0.456, 0.406]
+    normalization_std: [0.229, 0.224, 0.225]
+  swin_small:
+    timm_id: swin_small_patch4_window7_224.ms_in1k
+    input_ip102: 224
+    embedding_dim: 768
+    attention_modules_full: 24
+    dropout: 0.0
+    drop_path: 0.1
+    normalization_mean: [0.485, 0.456, 0.406]
+    normalization_std: [0.229, 0.224, 0.225]
+
+attention:
+  eca:
+    gamma: 2
+    b: 1
+  cbam:
+    reduction_ratio: 16
+    spatial_kernel: 7

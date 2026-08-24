@@ -1,0 +1,6 @@
+dominant_error_category,images,fraction_percent
+Fine-grained visual ambiguity between classes,73,36.5
+"Small, occluded, blurred, or weakly resolved insect",54,27
+Multiple insects or ambiguous target instance,29,14.5
+Potential annotation ambiguity/inconsistency,17,8.5
+Clear model error with sufficient visible evidence,27,13.5
