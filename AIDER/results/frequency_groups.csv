@@ -1,4 +1,0 @@
-group,classes,training_images_per_class_median_range,base_accuracy,base_recall,base_f1,cbam_accuracy,cbam_recall,cbam_f1,cbam_weighted_svm_f1
-Head,34,"812 [460, 3420]",82.7,79.1,80.1,84.8,81.05,82.5,82.72
-Middle,34,"337 [251, 454]",71.15,68.35,70.82,75.95,72.95,74.98,75.92
-Tail,34,"151 [39, 247]",57.69,55.8,56.71,63.41,61.34,61.97,64.11
