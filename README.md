@@ -1,341 +1,146 @@
 # AIDER: Attention-Guided Deep Embeddings for Fine-Grained Insect Recognition
 
-AIDER (**Attention-guided Insect Deep Embedding Recognition**) is a research framework for fine-grained insect recognition in cluttered field imagery. It studies two complementary aspects of recognition under matched experimental conditions:
-
-1. **Attention-guided representation refinement**, which aims to emphasize discriminative insect morphology while reducing the influence of distracting background regions.
-2. **Downstream decision modeling**, which evaluates whether classifiers operating on frozen deep embeddings can improve prediction without modifying the learned encoder representation.
+AIDER (**Attention-guided Insect Deep Embedding Recognition**) is a research framework for fine-grained insect recognition in cluttered field imagery. It studies how attention-guided representation refinement and downstream decision modeling affect recognition under matched experimental conditions.
 
 This repository accompanies the manuscript:
 
 > **Attention-Guided Deep Embeddings for Fine-Grained Insect Recognition**  
 > Quoc-Anh Nguyen, Thanh-Nghi Doan, and Huu-Hoa Nguyen
 
+The repository provides the source code, experiment configurations, data-partition metadata, and supporting materials associated with the study.
+
 ---
 
 ## Overview
 
-Fine-grained insect recognition is challenging because visually related categories may differ only in small morphological cues such as wing patterns, antennae, thorax markings, body contours, or localized textures. In field images, these cues can be obscured by background clutter, pose variation, scale changes, occlusion, and illumination differences.
+Fine-grained insect recognition is challenging because closely related categories may differ only in localized morphological cues such as wing patterns, antennae, thorax markings, body contours, or texture. In field imagery, these cues can be weakened by background clutter, pose variation, scale changes, occlusion, and illumination differences.
 
-AIDER provides a controlled experimental framework for studying how attention-guided feature refinement and downstream decision rules affect recognition performance.
+AIDER examines two complementary parts of this problem. The first is **representation refinement**, where attention modules are integrated into pretrained visual backbones. The second is **decision modeling**, where the learned representation is classified either by the jointly trained Softmax head or by an independently fitted classifier after the encoder has been selected and frozen.
 
-The framework supports three representation settings:
+Three representation settings are considered:
 
-- **Base**: the native backbone without an added AIDER attention module
+- **Base**: the native backbone without an added attention module
 - **ECA**: channel-only refinement using Efficient Channel Attention
 - **CBAM**: channel-spatial refinement using the Convolutional Block Attention Module
 
-The resulting feature maps are globally pooled to obtain image-level deep embeddings.
-
-AIDER then supports two prediction routes:
-
-- **End-to-end Softmax**, where the encoder and Softmax classifier are trained jointly
-- **Frozen-embedding classification**, where the validation-selected encoder is frozen, embeddings are standardized using training-set statistics, and independent classifiers are fitted to the fixed representation
-
-The frozen-embedding route changes the downstream decision rule but does not modify the learned embedding geometry.
+The final feature map is globally pooled to obtain an image-level deep embedding. In the frozen-embedding route, this representation is standardized using training-set statistics and passed to an independent downstream classifier. This route changes the decision rule applied to the fixed representation without modifying the learned embedding.
 
 ---
 
-## Supported Backbones
+## Experimental Setting
 
-The study evaluates AIDER across multiple CNN and Transformer backbone families:
+### Backbones
 
-- MobileNetV3-Large
-- EfficientNet-B5
-- EfficientNetV2-S
-- EfficientNetV2-M
-- ConvNeXt-S
-- ConvNeXt-B
-- Swin-S
+The study covers multiple CNN and Transformer backbone families.
 
-Attention preserves the native output dimension of each backbone.
+| Backbone | `timm` identifier | IP102 input | Embedding dimension | Attention settings |
+|---|---|---:|---:|---|
+| MobileNetV3-Large | `mobilenetv3_large_100.ra_in1k` | 224 × 224 | 1280 | Base, CBAM |
+| EfficientNet-B5 | `tf_efficientnet_b5.ra_in1k` | 456 × 456 | 2048 | Base, CBAM |
+| EfficientNetV2-S | `tf_efficientnetv2_s.in1k` | 384 × 384 | 1280 | Base, ECA, CBAM |
+| EfficientNetV2-M | `tf_efficientnetv2_m.in1k` | 384 × 384 | 1280 | Base, ECA, CBAM |
+| ConvNeXt-S | `convnext_small.fb_in1k` | 224 × 224 | 768 | Base, CBAM |
+| ConvNeXt-B | `convnext_base.fb_in1k` | 224 × 224 | 1024 | Base, CBAM |
+| Swin-S | `swin_small_patch4_window7_224.ms_in1k` | 224 × 224 | 768 | Base, CBAM |
 
----
+ECA uses the adaptive channel-kernel rule with \(\gamma=2\) and \(b=1\). CBAM uses reduction ratio \(r=16\) and a 7 × 7 spatial convolution. Attention preserves the native output dimension of each backbone.
 
-## Downstream Classifiers
+### Datasets
 
-The frozen-embedding evaluation includes:
+IP102 is the primary benchmark. Xie24 and D0 provide secondary within-dataset evaluations.
 
-- Logistic Regression
-- Linear SVM
-- K-Nearest Neighbors
-- Decision Tree
-- Random Forest
-- CatBoost
+| Dataset | Classes | Images | Train | Validation | Test |
+|---|---:|---:|---:|---:|---:|
+| IP102 | 102 | 75,222 | 45,095 | 7,508 | 22,619 |
+| Xie24 | 24 | 1,600 original images | 1,120 | 160 | 320 |
+| D0 | 40 | 4,508 | 3,156 | 451 | 901 |
 
-Weighted and unweighted variants are evaluated separately where applicable.
+The official IP102 classification split is retained. Xie24 is partitioned at the original-image level before augmentation, while D0 uses duplicate-aware class-stratified partitioning. Exact and perceptual duplicate screening is applied as part of the integrity audit. No cross-partition exact or visually confirmed near-duplicate pairs were identified under the reported procedure.
 
-All non-Softmax hyperparameters are selected independently for each encoder run using stratified five-fold cross-validation on the training embeddings only. Standardization is fitted independently within each cross-validation training fold.
+The datasets are third-party research datasets and are not redistributed in this repository.
 
----
+### Training and model selection
 
-## Representation-Learning Control
+Neural models are trained for 100 epochs with AdamW and ImageNet-pretrained `timm` weights. The validation-best checkpoint is selected by macro F1-score. The main IP102 experiments use ten matched seeds, `202601` through `202610`.
 
-Standard AIDER learns pooled encoder representations using cross-entropy.
+The primary analysis compares AIDER-CBAM Softmax with the matched backbone-only Softmax model under ordinary cross-entropy without class weighting. Complementary experiments separate representation choice, downstream decision model, class weighting, and explicit representation regularization.
 
-To provide an explicit representation-learning reference, the study also evaluates supervised-contrastive regularization with AIDER-CBAM and ConvNeXt-B. The control uses two augmented views and a training-only projection head. The projection head is discarded before evaluation, and final Softmax and frozen-SVM predictions operate on the original pooled ConvNeXt-B embedding.
-
-This experiment distinguishes:
-
-- attention-guided representation refinement
-- explicit representation regularization
-- downstream decision modeling after representation learning
+For frozen embeddings, non-Softmax hyperparameters are tuned independently for each encoder run using stratified five-fold cross-validation on the training embeddings only. The validation set is used for post-tuning classifier and route selection, and the test set is reserved for final evaluation.
 
 ---
 
-## Datasets
+## Primary Results on IP102
 
-The experiments use three insect image benchmarks.
+Across the six primary matched backbone comparisons, AIDER-CBAM improves accuracy by **1.87 to 3.92 percentage points** and macro F1-score by **2.24 to 4.70 points** over the corresponding backbone-only models.
 
-### IP102
+| Backbone | Base Accuracy | CBAM Accuracy | Δ Accuracy | Base Macro F1 | CBAM Macro F1 | Δ Macro F1 |
+|---|---:|---:|---:|---:|---:|---:|
+| MobileNetV3-Large | 70.48 ± 0.34 | 72.85 ± 0.28 | +2.37 | 61.81 ± 0.52 | 64.75 ± 0.43 | +2.94 |
+| EfficientNet-B5 | 74.63 ± 0.27 | 76.50 ± 0.22 | +1.87 | 65.81 ± 0.41 | 68.05 ± 0.34 | +2.24 |
+| EfficientNetV2-M | 72.73 ± 0.31 | 76.65 ± 0.25 | +3.92 | 64.95 ± 0.46 | 69.65 ± 0.37 | +4.70 |
+| ConvNeXt-S | 76.43 ± 0.22 | 78.85 ± 0.18 | +2.42 | 68.61 ± 0.33 | 71.68 ± 0.28 | +3.07 |
+| ConvNeXt-B | 76.93 ± 0.20 | 80.13 ± 0.17 | +3.20 | 69.21 ± 0.30 | 73.15 ± 0.26 | +3.94 |
+| Swin-S | 76.68 ± 0.23 | 79.43 ± 0.19 | +2.75 | 69.03 ± 0.34 | 72.28 ± 0.29 | +3.25 |
 
-IP102 is the primary benchmark and contains:
+Values are mean ± standard deviation over ten matched runs. All six primary paired comparisons have positive 95% confidence intervals for both accuracy and macro F1-score and remain significant after Holm correction. A paired class-stratified bootstrap with 10,000 resamples provides complementary uncertainty estimates over the fixed test set.
 
-- **102 classes**
-- **75,222 images**
-- **45,095 training images**
-- **7,508 validation images**
-- **22,619 test images**
-
-The official classification split is retained.
-
-IP102 is strongly long-tailed and contains substantial background clutter, fine-grained inter-class similarity, and intra-class variation.
-
-### Xie24
-
-Xie24 contains:
-
-- **24 classes**
-- **1,600 original images**
-- **1,120 training images**
-- **160 validation images**
-- **320 test images**
-
-Partitioning is performed at the original-image level before augmentation.
-
-### D0
-
-D0 contains:
-
-- **40 classes**
-- **4,508 images**
-- **3,156 training images**
-- **451 validation images**
-- **901 test images**
-
-Xie24 and D0 are used as secondary within-dataset evaluations rather than as external-domain validation.
+The strongest observed IP102 configuration combines AIDER-CBAM with ConvNeXt-B and an inverse-frequency-weighted frozen Linear SVM, reaching **81.16% accuracy** and **74.25% macro F1-score**. The controlled analyses treat this as a combination of representation refinement, downstream decision modeling, and class-imbalance handling rather than as a single isolated effect.
 
 ---
 
-## Data Integrity
+## Controlled Analysis of the Learned Representation
 
-Dataset integrity is handled explicitly.
+A factorial analysis with EfficientNetV2-M evaluates Base, ECA, and CBAM representations with Softmax, Logistic Regression, and Linear SVM under unweighted and inverse-frequency-weighted conditions. Across matched settings, representation refinement produces the largest gain, while the frozen Linear SVM and class weighting provide smaller complementary improvements.
 
-- Exact duplicates are screened using SHA-256 hashes.
-- Near-duplicate candidates are generated using perceptual hashing and then visually verified.
-- Confirmed duplicate relations are grouped before partitioning for Xie24 and D0.
-- Training augmentation is applied only after partitioning.
-- The official IP102 split is retained and audited post hoc.
+For example, under unweighted Softmax, macro F1-score increases from **64.95% for Base** to **69.65% for CBAM**. Applying an unweighted frozen Linear SVM to the same CBAM representation reaches **70.09%**, and inverse-frequency weighting raises the frozen-SVM result to **70.73%**. A parameter-matched non-attention residual control reaches **65.68% macro F1-score**, compared with **69.65%** for full CBAM, indicating that the observed gain is not explained by added trainable capacity alone in this controlled setting.
 
-No cross-partition exact or visually confirmed near-duplicate pairs were identified under the reported audit procedure.
+A complementary ConvNeXt-B experiment applies supervised-contrastive regularization to the representation. Macro F1-score increases from **73.15% to 73.93%** under Softmax, while the unweighted frozen Linear SVM reaches **74.16%** on the regularized representation. This result indicates that explicit representation regularization and downstream decision modeling can provide complementary gains.
 
-The image datasets themselves are third-party research datasets and are **not redistributed in this repository**.
+Representation geometry is examined directly using within-class cosine distance, between-class centroid distance, class-centroid margin, macro 5-nearest-neighbor purity, and a class-balanced Fisher discriminant ratio. Across matched EfficientNetV2-M runs, all five measures improve from Base to ECA to CBAM. Within-class cosine distance decreases from **0.314 to 0.297 to 0.271**, while between-class centroid distance increases from **0.388 to 0.401 to 0.421** and macro 5-nearest-neighbor purity rises from **71.84% to 74.26% to 77.31%**.
 
 ---
 
-## Experimental Protocol
+## Spatial and Long-Tail Diagnostics
 
-The main experiments use:
+Spatial behavior is evaluated on the 5,800 IP102 test images that intersect the official bounding-box annotations. Across matched EfficientNetV2-M runs, the Grad-CAM pointing-hit rate increases from **67.4% for Base** to **72.8% for ECA** and **80.6% for CBAM**, while box-overlap energy increases from **0.492 to 0.538 to 0.624**. Box-region perturbation experiments show the same ordering, with stronger retention when annotated insect regions are preserved and greater sensitivity when they are removed.
 
-- ImageNet-pretrained `timm` backbones
-- AdamW optimization
-- 100 training epochs
-- validation macro F1-score for checkpoint selection
-- ten matched random seeds: `202601` through `202610`
-- accuracy, macro precision, macro recall, and macro F1-score as evaluation metrics
+The long-tail analysis divides the 102 IP102 classes into equal Head, Middle, and Tail groups by training frequency. Base-to-CBAM macro F1-score gains are **+2.40**, **+4.16**, and **+5.26 points**, respectively. Across all classes, the improvement has a moderate negative association with log training frequency, with Spearman \(\rho=-0.34\) and \(p<0.001\).
 
-The main analysis compares AIDER-CBAM Softmax with the matched backbone-only Softmax model under ordinary cross-entropy without class weighting.
+On the annotated subset, smaller insects remain more difficult, while the Base-to-CBAM macro F1-score gain is largest for the Small group. A structured audit of 200 misclassified images further identifies fine-grained visual ambiguity and weakly resolved, small, occluded, or blurred insects as the most frequent dominant error categories.
 
-Additional analyses separate:
-
-- representation refinement
-- downstream classifier choice
-- class-imbalance handling
-- explicit representation regularization
-
----
-
-## Class-Imbalance Controls
-
-The study evaluates several imbalance-handling strategies:
-
-- ordinary cross-entropy
-- inverse-frequency weighted cross-entropy
-- Balanced Softmax
-- focal loss
-- weighted and unweighted Logistic Regression
-- weighted and unweighted Linear SVM
-
-Class-frequency quantities are computed from the training split only.
-
----
-
-## Statistical Analysis
-
-The primary IP102 comparisons use matched random seeds and paired statistical analysis.
-
-Reported analyses include:
-
-- paired mean differences
-- 95% confidence intervals
-- two-sided paired t-tests
-- paired-sample effect sizes
-- Holm correction for multiple comparisons
-- paired class-stratified bootstrap analysis with 10,000 resamples
-
-The bootstrap analysis complements run-level uncertainty by evaluating finite-test-sample variability while preserving class structure and prediction pairing.
-
----
-
-## Representation Analysis
-
-The study directly evaluates the geometry of the learned embeddings using:
-
-- within-class cosine distance
-- between-class centroid distance
-- class-centroid margin
-- macro 5-nearest-neighbor purity
-- class-balanced Fisher discriminant ratio
-
-These analyses compare Base, ECA, and CBAM representations under matched conditions.
-
----
-
-## Spatial Diagnostics
-
-Spatial behavior is examined using both qualitative and quantitative analyses.
-
-The quantitative evaluation uses the subset of IP102 test images with official bounding-box annotations and reports:
-
-- Grad-CAM pointing-hit rate
-- box-overlap energy
-- box-region-only prediction retention
-- box-masked prediction retention
-
-These diagnostics assess alignment with annotated insect regions within the evaluated benchmark. They are not interpreted as external-domain validation or as proof of pixel-level localization.
-
----
-
-## Long-Tail and Error Analysis
-
-The study further analyzes:
-
-- Head, Middle, and Tail class groups
-- class-frequency relationships
-- object-size effects
-- confusion patterns
-- structured residual errors
-
-These analyses characterize where recognition remains difficult, particularly for visually similar categories, low-frequency classes, and small-object cases.
-
----
-
-## Key Results
-
-Across the six primary matched backbone comparisons on IP102, AIDER-CBAM Softmax improves performance over the corresponding backbone-only Softmax models by:
-
-- **1.87 to 3.92 percentage points in accuracy**
-- **2.24 to 4.70 percentage points in macro F1-score**
-
-For AIDER-CBAM with ConvNeXt-B:
-
-| Decision setting | Accuracy (%) | Macro F1 (%) |
-|---|---:|---:|
-| Softmax, unweighted CE | 80.13 | 73.15 |
-| Unweighted frozen Linear SVM | 80.78 | 73.59 |
-| Inverse-frequency weighted frozen Linear SVM | 81.16 | 74.25 |
-
-The controlled analyses indicate that attention-guided representation refinement is the dominant source of improvement, while the frozen-embedding route and class-imbalance handling provide smaller complementary gains.
+Together, these analyses connect predictive performance with representation structure, spatial behavior, and residual difficulty within the evaluated benchmark conditions.
 
 ---
 
 ## Computational Profile
 
-Resource measurements are reported on an NVIDIA RTX 4070 Ti Super with batch size 1.
+Batch-1 latency is measured on an NVIDIA RTX 4070 Ti Super 16 GB using 200 warm-up predictions followed by 1,000 synchronized timed predictions.
 
-For ConvNeXt-B:
-
-| Configuration | Latency (ms/image) |
+| ConvNeXt-B configuration | Latency (ms/image) |
 |---|---:|
 | Backbone-only | 4.72 ± 0.08 |
 | AIDER-CBAM Softmax | 5.28 ± 0.09 |
 | AIDER-CBAM frozen SVM | 5.39 ± 0.09 |
 
-The frozen route additionally requires the stored training-derived scaler and downstream classifier.
+For ConvNeXt-B, CBAM adds 0.56 ms/image relative to the backbone-only model. The complete frozen-SVM route adds a further 0.11 ms/image relative to AIDER-CBAM Softmax. The frozen route additionally requires the stored training-derived scaler and external classifier.
 
 ---
 
-## Reproducibility Environment
+## Reproducibility
 
-The reference experiments use:
+The reference environment uses Ubuntu 22.04.5 LTS, Python 3.11.11, PyTorch 2.6.0+cu124, torchvision 0.21.0+cu124, `timm` 1.0.14, scikit-learn 1.6.1, CatBoost 1.2.8, CUDA 12.4, and an NVIDIA RTX 4070 Ti Super 16 GB GPU.
 
-```text
-Ubuntu 22.04.5 LTS
-Python 3.11.11
-PyTorch 2.6.0+cu124
-torchvision 0.21.0+cu124
-timm 1.0.14
-scikit-learn 1.6.1
-CatBoost 1.2.8
-Pillow 11.1.0
-ImageHash 4.3.2
-CUDA 12.4
-```
+Neural training uses AdamW with a base learning rate of \(5\times10^{-4}\), five-epoch linear warmup, cosine decay to \(10^{-6}\), FP16 automatic mixed precision, and 100 training epochs with early stopping disabled. The ten matched seeds are `202601` through `202610`.
 
-Hardware:
-
-```text
-Intel Core i7-13700K
-32 GB system RAM
-NVIDIA RTX 4070 Ti Super, 16 GB
-```
-
-Reproducibility is defined with respect to the documented environment, data partitions, random seeds, model configurations, and controlled random-number initialization. Bitwise-identical execution across different software releases, CUDA versions, or hardware platforms is not assumed.
+Detailed augmentation settings, classifier grids, backbone-specific attention insertion points, split manifests, statistical analyses, dataset-integrity records, and diagnostic protocols are provided in the accompanying Supplementary Material.
 
 ---
 
-## Usage
+## Scope and Data Availability
 
-Before running experiments, prepare the required third-party datasets according to their original distribution terms and reproduce the dataset splits using the provided partition metadata.
+The main conclusions are based on controlled experiments within IP102. Xie24 and D0 provide additional within-dataset evidence. Evaluation under new cameras, locations, illumination conditions, background distributions, insect populations, and acquisition processes remains an important direction for external field validation and domain adaptation. Further work also includes improved recognition of rare classes and small objects, together with direct evaluation on mobile and edge platforms.
 
-Experiment settings should follow the configuration associated with the selected backbone, attention variant, decision route, and class-imbalance condition.
-
-For frozen-embedding experiments:
-
-1. Train the neural encoder and select the validation-best checkpoint.
-2. Freeze the selected encoder.
-3. Extract training, validation, and test embeddings.
-4. Fit feature standardization using training embeddings only.
-5. Tune non-Softmax classifiers using stratified five-fold cross-validation on training embeddings only.
-6. Refit the selected classifier variant on the complete training embeddings.
-7. Use the validation set for post-tuning classifier and route selection.
-8. Evaluate the fixed configuration on the test set.
-
----
-
-## Scope and Limitations
-
-AIDER is a controlled empirical framework built from established attention, backbone, and classifier components. It does not introduce a new attention operator, embedding loss, optimization algorithm, or classifier.
-
-The conclusions are restricted to the evaluated benchmark conditions. The current experiments do not establish robustness to changes in:
-
-- camera hardware
-- geographic location
-- illumination
-- background distribution
-- insect population
-- acquisition process
-
-External field validation, domain adaptation, improved rare-class recognition, and deployment on mobile or edge hardware remain important directions for future work.
+IP102, Xie24, and D0 were obtained from their original sources and are not redistributed with this repository. Access and reuse remain subject to the terms specified by their respective providers. Source code, experiment configurations, split metadata, and supporting materials associated with this study are maintained in the repository.
 
 ---
 
@@ -345,8 +150,6 @@ Citation information will be updated when the associated article is published.
 
 For now, please cite the manuscript as:
 
-> Quoc-Anh Nguyen, Thanh-Nghi Doan, and Huu-Hoa Nguyen,  
+> Quoc-Anh Nguyen, Thanh-Nghi Doan, and Huu-Hoa Nguyen  
 > **“Attention-Guided Deep Embeddings for Fine-Grained Insect Recognition.”**
-
----
 
